@@ -12,7 +12,7 @@ This module is part of the low level interface to L<Text::UnicodeBox>; you proba
 
 use Moose;
 use Text::UnicodeBox::Utility;
-use Text::CharWidth qw(mbwidth mbswidth);
+use Unicode::GCString;
 use Term::ANSIColor qw(colorstrip);
 use Exporter 'import';
 use List::Util qw(max);
@@ -63,7 +63,7 @@ sub BOX_STRING {
 	my $stripped_string = colorstrip($string);
 
 	# Determine the width on a terminal of the string given; may be composed of unicode characters that take up two columns, or by ones taking up 0 columns
-	my $length = mbswidth($stripped_string);
+	my $length = Unicode::GCString->new($stripped_string)->columns;
 
 	return __PACKAGE__->new(value => $string, length => $length);
 }
@@ -267,7 +267,7 @@ sub split {
 			return;
 		}
 		
-		my $char_width = mbwidth($char);
+		my $char_width = Unicode::GCString->new($char)->columns;
 		$save_buffer->() if $char_width + $width > $args{max_width};
 
 		$buffer .= $char;
@@ -299,7 +299,7 @@ sub split {
 				$value = '';
 			}
 			# Wrap to the next line if the current line can't hold this word
-			my $word_width = mbswidth($word);
+			my $word_width = Unicode::GCString->new($word)->columns;
 			$save_buffer->() if $word_width + $width > $args{max_width};
 
 			# Write out the word, character by character

@@ -13,7 +13,7 @@ my $build = Module::Build->new(
 	requires => {
 		'Moose'           => 0,
 		'Term::ANSIColor' => '2.01',
-		'Text::CharWidth' => '0.04',
+		'Unicode::GCString' => 0,
 	},
 	create_makefile_pl => 'passthrough',
 	create_readme      => 1,
